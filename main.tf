@@ -1,11 +1,11 @@
 terraform {
   required_providers {
     azurerm = {
-      source = "hashicorp/azurerm"
+      source  = "hashicorp/azurerm"
       version = "~> 4.35.0"
     }
     azuread = {
-      source = "hashicorp/azuread"
+      source  = "hashicorp/azuread"
       version = "~> 3.4.0"
     }
   }
@@ -37,8 +37,8 @@ resource "azuread_service_principal" "hcpt_service_principal" {
 # Creates a role assignment which controls the permissions the service
 # principal has within the Azure subscription.
 resource "azurerm_role_assignment" "name" {
-  principal_id = azuread_service_principal.hcpt_service_principal.object_id
-  scope = data.azurerm_subscription.current.id
+  principal_id         = azuread_service_principal.hcpt_service_principal.object_id
+  scope                = data.azurerm_subscription.current.id
   role_definition_name = "Contributor"
 }
 
@@ -46,18 +46,18 @@ resource "azurerm_role_assignment" "name" {
 # workspace will be able to authenticate to Azure for the "plan" run phase.
 resource "azuread_application_federated_identity_credential" "hcpt_federated_credential_plan" {
   application_id = azuread_application.hcpt_app.id
-  issuer = "https://${var.hcpt_hostname}"
-  display_name = "hcpt-app-marifw-credential-plan"
-  subject = "organization:${var.hcpt_organization_name}:project:${var.hcpt_project_name}:workspace:${var.hcpt_workspace_name}:run_phase:plan"
-  audiences = [var.hcpt_azure_audience]
+  issuer         = "https://${var.hcpt_hostname}"
+  display_name   = "hcpt-app-marifw-credential-plan"
+  subject        = "organization:${var.hcpt_organization_name}:project:${var.hcpt_project_name}:workspace:${var.hcpt_workspace_name}:run_phase:plan"
+  audiences      = [var.hcpt_azure_audience]
 }
 
 # Creates a federated identity credential which ensures that the given
 # workspace will be able to authenticate to Azure for the "apply" run phase.
 resource "azuread_application_federated_identity_credential" "hcpt_federated_credential_apply" {
   application_id = azuread_application.hcpt_app.id
-  issuer = "https://${var.hcpt_hostname}"
-  display_name = "hcpt-app-marifw-credential-apply"
-  subject = "organization:${var.hcpt_organization_name}:project:${var.hcpt_project_name}:workspace:${var.hcpt_workspace_name}:run_phase:apply"
-  audiences = [var.hcpt_azure_audience]
+  issuer         = "https://${var.hcpt_hostname}"
+  display_name   = "hcpt-app-marifw-credential-apply"
+  subject        = "organization:${var.hcpt_organization_name}:project:${var.hcpt_project_name}:workspace:${var.hcpt_workspace_name}:run_phase:apply"
+  audiences      = [var.hcpt_azure_audience]
 }
